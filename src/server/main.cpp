@@ -3,9 +3,6 @@
 #include <iostream>
 #include "FbFile.h"
 #include "messages.h"
-/*
- * tmBaixhAva
- */
 
 messages::hello fromFrameBuffer(const FbFile& fbFile) {
     messages::hello h {};
