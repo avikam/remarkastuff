@@ -14,7 +14,6 @@ public:
 
     enum FbError { NO_ERROR, FD, IOCTL_FIX, IOCTL_VAR, MMAP };
     inline std::tuple<FbError, int> getError() const { return std::make_tuple(fb_error, last_errno); };
-    void refresh();
 
     inline int screenBytesSize() const{
         return fix_screen_info.smem_len;
@@ -33,8 +32,6 @@ private:
 
     using screen_mem_t = std::unique_ptr<unsigned char, std::function<void(unsigned char*)>>;
     screen_mem_t screen_memory;
-
-    void getFixScreenInfo();
 };
 
 #endif //REMARK_FBFILE_H

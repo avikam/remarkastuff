@@ -56,15 +56,8 @@ FbFile::~FbFile() {
     }
 }
 
-void FbFile::getFixScreenInfo() {
-}
-
 const unsigned char* FbFile::screen() const{
     if (screen_memory == nullptr)
         return nullptr;
     return screen_memory.get();
-}
-
-void FbFile::refresh() {
-
 }
