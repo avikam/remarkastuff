@@ -55,8 +55,6 @@ int main() {
             }
 
             if (req_string == "refresh") {
-                fbFile.refresh();
-
                 zmq::message_t resp(fbFile.screenBytesSize());
                 memcpy(resp.data(), fbFile.screen(), fbFile.screenBytesSize());
                 sock.send(resp, zmq::send_flags::dontwait);
