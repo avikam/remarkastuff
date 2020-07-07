@@ -50,6 +50,13 @@ jobs:
             - /var/cache/apt/archives
             - /home/deps
 
+      - run: >
+          cd /home/remark &&
+          mkdir cmake-build-armv7 &&
+          cd cmake-build-armv7 &&
+          cmake -DCMAKE_TOOLCHAIN_FILE=/home/remark/toolchain.cmake .. &&
+          make
+
 workflows:
   version: 2
   build:
