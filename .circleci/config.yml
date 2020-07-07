@@ -14,7 +14,7 @@ jobs:
             - packages
 
       - run: apt update && apt install -yd cmake
-      - run: mkdir -f /home/deps
+      - run: mkdir -p /home/deps
 
       - run: >
           cd /home/deps &&
@@ -31,7 +31,17 @@ jobs:
           tar xf zmq.tar.gz &&
           mkdir build-zmq &&
           cd build-zmq &&
-          cmake -DCMAKE_TOOLCHAIN_FILE=/home/remark/toolchain.cmake -DWITH_LIBBSD=OFF -DENABLE_CURVE=OFF ../zeromq-4.3.2/
+          cmake -DCMAKE_TOOLCHAIN_FILE=/home/remark/toolchain.cmake -DWITH_LIBBSD=OFF -DENABLE_CURVE=OFF ../zeromq-4.3.2/ &&
+          make && make install
+
+      - run: >
+          cd /home/deps &&
+          wget -O cppzmq.tar.gz https://github.com/zeromq/cppzmq/archive/v4.6.0.tar.gz &&
+          tar xf cppzmq.tar.gz &&
+          mkdir build-cppzmq &&
+          cd build-cppzmq &&
+          cmake -DCMAKE_TOOLCHAIN_FILE=/home/remark/toolchain.cmake ../cppzmq-4.6.0/ &&
+          make && make install
 
       - save_cache:
           key: packages
