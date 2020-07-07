@@ -1,0 +1,47 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: buildpack-deps:bullseye-scm
+    working_directory: /home/remark
+
+    steps:
+      - checkout
+      - run: find .
+      - run: find /home
+      - restore_cache:
+          keys:
+            - packages
+
+      - run: apt update && apt install -yd cmake
+      - run: mkdir -f /home/deps
+
+      - run: >
+          cd /home/deps &&
+          if ! [ -f /home/deps/gcc-*/bin/arm-none-linux-gnueabihf-gcc ]; then
+            apt install -y wget xz-utils &&
+            wget -O cross.tar.xz 'https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf.tar.xz?revision=fed31ee5-2ed7-40c8-9e0e-474299a3c4ac&la=en&hash=76DAF56606E7CB66CC5B5B33D8FB90D9F24C9D20' &&
+            tar xf cross.tar.xz
+          fi
+
+      - run: apt install -y cmake
+      - run: >
+          cd /home/deps &&
+          wget -O zmq.tar.gz https://github.com/zeromq/libzmq/releases/download/v4.3.2/zeromq-4.3.2.tar.gz &&
+          tar xf zmq.tar.gz &&
+          mkdir build-zmq &&
+          cd build-zmq &&
+          cmake -DCMAKE_TOOLCHAIN_FILE=/home/remark/toolchain.cmake -DWITH_LIBBSD=OFF -DENABLE_CURVE=OFF ../zeromq-4.3.2/
+
+      - save_cache:
+          key: packages
+          paths:
+            - /var/lib/apt/lists/
+            - /var/cache/apt/archives
+            - /home/deps
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
