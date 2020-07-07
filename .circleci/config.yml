@@ -7,11 +7,10 @@ jobs:
 
     steps:
       - checkout
-      - run: find .
-      - run: find /home
+
       - restore_cache:
           keys:
-            - packages
+            - dependencies
 
       - run: apt update && apt install -yd cmake
       - run: mkdir -p /home/deps
@@ -44,7 +43,7 @@ jobs:
           make && make install
 
       - save_cache:
-          key: packages
+          key: dependencies
           paths:
             - /var/lib/apt/lists/
             - /var/cache/apt/archives
@@ -56,6 +55,10 @@ jobs:
           cd cmake-build-armv7 &&
           cmake -DCMAKE_TOOLCHAIN_FILE=/home/remark/toolchain.cmake .. &&
           make
+
+      - store_artifacts:
+          path: /home/remark/cmake-build-armv7/
+          destination: cmake-build-armv7
 
 workflows:
   version: 2
